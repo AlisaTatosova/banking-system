@@ -42,6 +42,8 @@ public:
     bool is_valid_password_repeat(const QString& password, const QString& repeated_password);
     void valid_field(QLabel* status, const QString& message);
 
+    void insert_data(const QStringList& data);
+
 private:
     QWidget* l;
     QVBoxLayout* group_box_layout;

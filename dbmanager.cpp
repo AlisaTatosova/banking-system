@@ -1,8 +1,16 @@
 #include "dbmanager.h"
+#include <QSqlQuery>
+#include <QStringList>
+#include <QDebug>
+#include <QSqlError>
 
 DbManager::DbManager() {
     db = QSqlDatabase::addDatabase("QSQLITE"); // // adding db
     db.setDatabaseName("C:/Users/Admin/databases/my_db.db"); // setting db name
+    if (!db.open()) {
+        qDebug() << "Error: Couldn't open database. Reason:" << db.lastError().text();
+    }
+    create_table("Clients", QStringList() << "Name" << "Surname" << "Email" << "Age" << "Phone" << "Username" << "Password");
 }
 
 DbManager::~DbManager() {
@@ -31,4 +39,15 @@ void DbManager::close_database() {
 
 QSqlDatabase& DbManager::get_database() {
     return db;
+}
+
+void DbManager::create_table(const QString& table_name, const QStringList& column_names) {
+    QSqlQuery query;
+    QString table = "CREATE TABLE " + table_name + " (";
+    for (const QString& col : column_names) {
+        table += col + " VARCHAR(255), ";
+    }
+    table.chop(2); // removing the trailing comma and space
+    table += ")";
+    query.exec(table);
 }

@@ -10,7 +10,7 @@ Registration::Registration(QWidget *parent) :
     setWindowFlags(windowFlags() | Qt::WindowMaximizeButtonHint);
     setWindowTitle("Registration  window");
 
-    QRect screen = QApplication::desktop()->screenGeometry();
+    QRect screen = QApplication::desktop() -> screenGeometry();
     this->setGeometry(screen);
     this->setStyleSheet("background-color: black;");
 
@@ -151,7 +151,7 @@ Registration::Registration(QWidget *parent) :
     group_box_layout -> addLayout(password_layout);
     //group_box_layout->addSpacing(-35);
      group_box_layout -> addLayout(password_status_layout);
-    group_box_layout->addSpacing(40);
+    group_box_layout ->addSpacing(40);
     //group_box_layout->addSpacing(30);
     group_box_layout -> addWidget(registration_button);
 
@@ -163,7 +163,6 @@ Registration::Registration(QWidget *parent) :
     layout -> addWidget(l);
 
 
-
     QPixmap image(":/images/logo2.png");
 
     if (image.isNull()) {
@@ -173,7 +172,6 @@ Registration::Registration(QWidget *parent) :
         logo_image -> setPixmap(image);
         logo_image -> setGeometry((screen.width()) / 2 - 145, (screen.height()) / 2 - 435, 200, 200);
     }
-
 }
 
 void Registration::inputing_field(const QString& text, QLineEdit* lineedit, const QString& message) {
@@ -186,17 +184,16 @@ void Registration::inputing_field(const QString& text, QLineEdit* lineedit, cons
 }
 
 void Registration::set_placeholder_color(QLineEdit* lineEdit, const QString& text, const QColor& color) {
-    QPalette palette = lineEdit->palette();
+    QPalette palette = lineEdit -> palette();
     palette.setColor(QPalette::PlaceholderText, color);
-    lineEdit->setPalette(palette);
-    lineEdit->setPlaceholderText(text);
+    lineEdit -> setPalette(palette);
+    lineEdit -> setPlaceholderText(text);
 }
 
 void Registration::set_status_left(QLabel* label) {
    // label -> setFixedSize(370, 40);
     label -> setFixedWidth(370);
     label -> setStyleSheet("margin-left: 20px; border: none; padding: 5px;  color: white; font-size: 12px;");
-
 }
 
 void Registration::set_status_right(QLabel* label) {
@@ -221,7 +218,6 @@ void Registration::set_lineedit_left(QLineEdit* lineedit) {
     lineedit -> setFixedSize(370, 40);
     // de left board of groupbox and name_edit be far
     lineedit -> setStyleSheet("margin-left: 20px; border: 2px solid gray; border-radius: 15px; font-size: 20px; color: white; padding: 5px;"); // border-radius: 15px -> this makes the bords rounded, padding: 5px -> this makes starting the text in lineedit from little bit righter from board,
-
 }
 
 void Registration::set_lineedit_right(QLineEdit* lineedit) {
@@ -238,7 +234,6 @@ void Registration::validate_registration() {
     QString username = username_edit -> text().trimmed();
     QString password = password_edit -> text().trimmed();
     QString password_repeat = password_repeat_edit -> text().trimmed();
-
     bool invalid = false;
 
     if (!is_valid_name(first_name)) {
@@ -269,8 +264,6 @@ void Registration::validate_registration() {
         valid_field(age_status, "+okay");
     }
 
-
-
     if (!is_valid_phone(phone)) {
         not_valid_field(phone_status, "*invalid phone number format (10 digits).");
         invalid = true;
@@ -300,9 +293,70 @@ void Registration::validate_registration() {
         valid_field(password_repeat_status, "+okay");
     }
 
+    QSqlQuery check_customer;
+    check_customer.prepare("SELECT * FROM Clients WHERE Name = :name AND Surname = :surname");
+    check_customer.bindValue(":name", first_name);
+    check_customer.bindValue(":surname", last_name);
 
-    if (invalid) {
+    QSqlQuery check_username;
+    check_username.prepare("SELECT * FROM Clients WHERE Username = :username");
+    check_username.bindValue(":username", username);
+
+
+    if (check_customer.exec()) {
+        // If a customer with the given name and last name exists,
+        if (check_customer.next()) {
+            name_status -> setText("*Client with the given name and surname already exists.");
+            name_status -> setStyleSheet("margin-left: 20px; padding: 5px; border: none; color: red; font-size: 12px;");
+            surname_status -> setText("*Client with the given name and surname already exists.");
+            surname_status -> setStyleSheet("margin-right: 20px; padding: 5px; border: none; color: red; font-size: 12px;");
+            return;
+        }
+    } else {
+        qDebug() << "Error checking customer existence:" << check_customer.lastError().text();
         return;
+    }
+
+    if (check_username.exec()) {
+        // if a customer with the given username already exists
+        if (check_username.next()) {
+            username_status -> setText("*Client with the given username already exists.");
+            username_status -> setStyleSheet("margin-right: 20px; padding: 5px; border: none; color: red; font-size: 12px;");
+            return;
+        }
+    } else {
+        qDebug() << "Error checking usrename existence:" << check_customer.lastError().text();
+        return;
+    }
+
+
+    if (!invalid) {
+        QStringList data;
+        data << name_edit -> text() << surname_edit -> text() << mail_edit -> text() << age_edit -> text() << phone_edit -> text()
+             << username_edit -> text() << password_edit -> text();
+
+         insert_data(data);
+    } else {
+        return;
+    }
+
+}
+
+void Registration::insert_data(const QStringList& data) {
+    QSqlQuery query;
+    query.prepare("INSERT INTO Clients (Name, Surname, Email, Age, Phone, Username, Password) VALUES (:Name, :Surname, :Email, :Age, :Phone, :Username, :Password)");
+    query.bindValue(":Name", data.value(0));
+    query.bindValue(":Surname", data.value(1));
+    query.bindValue(":Email", data.value(2));
+    query.bindValue(":Age", data.value(3));
+    query.bindValue(":Phone", data.value(4));
+    query.bindValue(":Username", data.value(5));
+    query.bindValue(":Password", data.value(6));
+
+    if (query.exec()) {
+        qDebug() << "Data inserted successfully.";
+    } else {
+        qDebug() << "Error inserting data:" << query.lastError().text();
     }
 }
 

@@ -47,7 +47,6 @@ private:
 
     QSqlDatabase& db;
 
-
 };
 
 #endif // LOGIN_H

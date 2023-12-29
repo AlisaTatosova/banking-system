@@ -107,7 +107,7 @@ Login::Login(QWidget *parent) : QWidget(parent), db(DbManager::instance().get_da
     group_box_layout -> addWidget(usernane_edit);
    // group_box_layout->addSpacing(-35);
     group_box_layout -> addWidget(login_status);
-    group_box_layout->addSpacing(15);
+    group_box_layout ->addSpacing(15);
     group_box_layout -> addLayout(password_Layout);
     //group_box_layout->addSpacing(-35);
     group_box_layout -> addWidget(password_status);
@@ -117,9 +117,7 @@ Login::Login(QWidget *parent) : QWidget(parent), db(DbManager::instance().get_da
     group_box_layout -> addWidget(login_button);
     //group_box_layout->addSpacing(-35);
     group_box_layout -> addWidget(forgett_password_button);
-
-
-    group_box_layout->addSpacing(20);
+    group_box_layout -> addSpacing(20);
 
 
     // for adding space beetween left board of groupbox and left noard of linedit
@@ -142,8 +140,6 @@ Login::Login(QWidget *parent) : QWidget(parent), db(DbManager::instance().get_da
         logo_image -> setPixmap(image);
         logo_image -> setGeometry((screen.width()) / 2 - 145, (screen.height()) / 2 - 400, 200, 200);
     }
-
-
 }
 
 void Login::inputing_username(const QString& text) {
@@ -161,26 +157,23 @@ void Login::inputing_password(const QString& text) {
     } else {
        //  password_edit->setStyleSheet("border: 2px solid gray; border-radius: 15px; font-size: 20px; color: white; padding: 10px; background-color: black; selection-color: white;");
         password_edit->setPlaceholderText("");
-
-
     }
 }
 
 void Login::set_placeholder_color(QLineEdit* lineEdit, const QString& text, const QColor& color) {
-    QPalette palette = lineEdit->palette();
+    QPalette palette = lineEdit -> palette();
     palette.setColor(QPalette::PlaceholderText, color);
-    lineEdit->setPalette(palette);
-    lineEdit->setPlaceholderText(text);
+    lineEdit -> setPalette(palette);
+    lineEdit -> setPlaceholderText(text);
 }
 
 void Login::show_password_click() {
-    if (password_edit->echoMode() == QLineEdit::Password) {
-        password_edit->setEchoMode(QLineEdit::Normal);
-        show_password_button->setIcon(QIcon(":/images/open_eye.png"));
-    }
-    else {
-        password_edit->setEchoMode(QLineEdit::Password);
-        show_password_button->setIcon(QIcon(":/images/eye_icon.png"));
+    if (password_edit -> echoMode() == QLineEdit::Password) {
+        password_edit -> setEchoMode(QLineEdit::Normal);
+        show_password_button -> setIcon(QIcon(":/images/open_eye.png"));
+    } else {
+        password_edit -> setEchoMode(QLineEdit::Password);
+        show_password_button -> setIcon(QIcon(":/images/eye_icon.png"));
     }
 }
 
@@ -197,30 +190,20 @@ void Login::authenticate() {
     }
 
     QSqlQuery query;
-    query.prepare("SELECT CustomerID FROM Customers WHERE Username = :username AND Password = :password");
+    query.prepare("SELECT * FROM Clients WHERE Username = :username AND Password = :password");
     query.bindValue(":username", username);
     query.bindValue(":password", password);
 
     if (query.exec() && query.next()) {
         password_status -> setText("Authentication successful!"); // Authentication successful
         login_status -> setText("Authentication successful!");
-        QPalette palette;
-        palette.setColor(QPalette::WindowText, Qt::green);
-        password_status -> setPalette(palette);
-        login_status -> setPalette(palette);
-       // QFont font;
-        //font.setPointSize(8);
-        //password_status -> setFont(font);
-        //login_status -> setFont(font);
+        login_status->setStyleSheet("padding: 5px; border: none; color: green; font-size: 12px;");
+        password_status->setStyleSheet("padding: 5px; border: none; color: green; font-size: 12px;");
     } else {
         password_status -> setText("*Authentication failed. Invalid username or password."); // Authentication failed
         login_status -> setText("*Authentication failed. Invalid username or password."); // Authentication failed
-        login_status->setStyleSheet("padding: 5px; border: none; color: red; font-size: 12px;");
-        password_status->setStyleSheet("padding: 5px; border: none; color: red; font-size: 12px;");
-       // QFont font;
-        //font.setPointSize(8);
-        //password_status -> setFont(font);
-        //login_status -> setFont(font);
+        login_status -> setStyleSheet("padding: 5px; border: none; color: red; font-size: 12px;");
+        password_status -> setStyleSheet("padding: 5px; border: none; color: red; font-size: 12px;");
     }
 
     // Close the database

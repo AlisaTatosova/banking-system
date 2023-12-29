@@ -9,6 +9,7 @@ public:
     bool open_database();
     void close_database();
     QSqlDatabase& get_database();
+    void create_table(const QString& tableName, const QStringList& column_names);
 
 private:
     DbManager();
