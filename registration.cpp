@@ -3,47 +3,45 @@
 #include <QDesktopWidget>
 #include <QDebug>
 #include <QVBoxLayout>
+#include "successfullregistration.h"
 
 Registration::Registration(QWidget *parent) :
     QDialog(parent) ,
     db(DbManager::instance().get_database()) {
-    setWindowFlags(windowFlags() | Qt::WindowMaximizeButtonHint);
+
+    setWindowFlags(windowFlags() | Qt::WindowMaximizeButtonHint); // for adding maximize button to window
     setWindowTitle("Registration  window");
 
     QRect screen = QApplication::desktop() -> screenGeometry();
-    this->setGeometry(screen);
-    this->setStyleSheet("background-color: black;");
+    this -> setGeometry(screen);
+    this -> setStyleSheet("background-color: black;");
 
     int x = screen.width() / 2 - 430;
     int y = screen.height() / 2 - 650;
 
-    l = new QWidget;
-    l -> setFixedSize(800, 650);
-    l -> setStyleSheet("border: 2px solid gray; border-radius: 15px;");
-    group_box_layout = new QVBoxLayout(l);
-    group_box_layout -> setSpacing(0);
-    group_box_layout -> setAlignment(Qt::AlignBottom);
+    widget = new QWidget;
+    widget -> setFixedSize(800, 650);
+    widget -> setStyleSheet("border: 2px solid gray; border-radius: 15px;");
 
-    registration = new QLabel("Registration");
+    registration = new QLabel("Registration"); // registration label
     registration -> setStyleSheet("color: white; font-size: 50px; border: none; ");
 
-    name_edit = new QLineEdit;
+    name_edit = new QLineEdit; // lineedit for name
     set_lineedit_left(name_edit);
-
-    set_placeholder_color(name_edit, " Enter name", Qt::gray);
-    connect(name_edit, &QLineEdit::textChanged, this, [=](const QString& text) {
+    set_placeholder_color(name_edit, " Enter name", Qt::gray); // setting placeholder text. it is a text that is displayed in the input field when it is empty.
+    connect(name_edit, &QLineEdit::textChanged, this, [=](const QString& text) { //  establishes connection between the textChanged signal of a QLineEdit widget named name_edit and a lambda function.
         inputing_field(text, name_edit, "Enter your name");
     });
-    name_status = new QLabel();
+    name_status = new QLabel(); // for status of linedit name
     set_status_left(name_status);
 
-    surname_edit = new QLineEdit;
+    surname_edit = new QLineEdit; // lineedit for surname
     set_lineedit_right(surname_edit);
-    set_placeholder_color(surname_edit, " Enter your surname", Qt::gray);
+    set_placeholder_color(surname_edit, " Enter your surname", Qt::gray); // setting placeholder text. it is a text that is displayed in the input field when it is empty.
     connect(surname_edit, &QLineEdit::textChanged, this, [=](const QString& text) {
         inputing_field(text, surname_edit, "Enter your surname");
     });
-    surname_status = new QLabel();
+    surname_status = new QLabel(); // status of surname input
     set_status_right(surname_status);
 
     // name surname linedits in one line
@@ -54,76 +52,83 @@ Registration::Registration(QWidget *parent) :
     name_surname_status_layout = new QHBoxLayout;
     add_two_labels_in_one_line(name_surname_status_layout, name_status, surname_status);
 
-    mail_edit = new QLineEdit;
+    mail_edit = new QLineEdit; // lineedit for mail
     set_lineedit_left(mail_edit);
-    set_placeholder_color(mail_edit, " Enter your email address", Qt::gray);
+    set_placeholder_color(mail_edit, " Enter your email address", Qt::gray); // setting placeholder text. it is a text that is displayed in the input field when it is empty.
     connect(mail_edit, &QLineEdit::textChanged, this, [=](const QString& text) {
         inputing_field(text, mail_edit, "Enter your email address");
     });
-    mail_status = new QLabel();
+    mail_status = new QLabel(); // status of mail input
     set_status_left(mail_status);
 
-    age_edit = new QLineEdit;
+    age_edit = new QLineEdit; // lineedit for age
     set_lineedit_right(age_edit);
-    set_placeholder_color(age_edit, " Enter your age", Qt::gray);
+    set_placeholder_color(age_edit, " Enter your age", Qt::gray); // setting placeholder text. it is a text that is displayed in the input field when it is empty.
     connect(age_edit, &QLineEdit::textChanged, this, [=](const QString& text) {
         inputing_field(text, age_edit, "Enter your age");
     });
-    age_status = new QLabel();
+    age_status = new QLabel(); // status of age input
     set_status_right(age_status);
 
+    // mail age linedits in one line
     mail_age_layout = new QHBoxLayout;
     add_two_linedits_in_one_line(mail_age_layout, mail_edit, age_edit);
 
+    // mail age statuses labels in one line
     mail_age_status_layout = new QHBoxLayout;
     add_two_labels_in_one_line(mail_age_status_layout, mail_status, age_status);
 
-    phone_edit = new QLineEdit;
+    phone_edit = new QLineEdit; // lineedit for phone number
     set_lineedit_left(phone_edit);
-    set_placeholder_color(phone_edit, " Enter your phone number", Qt::gray);
+    set_placeholder_color(phone_edit, " Enter your phone number", Qt::gray); // setting placeholder text. it is a text that is displayed in the input field when it is empty.
     connect(phone_edit, &QLineEdit::textChanged, this, [=](const QString& text) {
         inputing_field(text, phone_edit, "Enter your phone number");
     });
-    phone_status = new QLabel();
+    phone_status = new QLabel(); // status of phone number input
     set_status_left(phone_status);
 
-    username_edit = new QLineEdit;
+    username_edit = new QLineEdit; // lineedit for username
     set_lineedit_right(username_edit);
-    set_placeholder_color(username_edit, " Enter your username", Qt::gray);
+    set_placeholder_color(username_edit, " Enter your username", Qt::gray); // setting placeholder text. it is a text that is displayed in the input field when it is empty.
     connect(username_edit, &QLineEdit::textChanged, this, [=](const QString& text) {
         inputing_field(text, username_edit, "Enter your username");
     });
-
-    username_status = new QLabel();
+    username_status = new QLabel(); // status of username input
     set_status_right(username_status);
 
+    // phone username linedits in one line
     phone_username_layout = new QHBoxLayout;
     add_two_linedits_in_one_line(phone_username_layout, phone_edit, username_edit);
 
+    // phone username statuses labels in one line
     phone_username_status_layout = new QHBoxLayout;
     add_two_labels_in_one_line(phone_username_status_layout, phone_status, username_status);
 
-    password_edit = new QLineEdit;
+    password_edit = new QLineEdit; // lineedit for password
+    password_edit -> setEchoMode(QLineEdit::Password);
     set_lineedit_left(password_edit);
-    set_placeholder_color(password_edit, " Enter your password", Qt::gray);
+    set_placeholder_color(password_edit, " Enter your password", Qt::gray); // setting placeholder text. it is a text that is displayed in the input field when it is empty.
     connect(password_edit, &QLineEdit::textChanged, this, [=](const QString& text) {
         inputing_field(text, password_edit, "Enter your password");
     });
-    password_status = new QLabel();
+    password_status = new QLabel(); // status of password input
     set_status_left(password_status);
 
     password_repeat_edit = new QLineEdit;
+    password_repeat_edit -> setEchoMode(QLineEdit::Password);
     set_lineedit_right(password_repeat_edit);
-    set_placeholder_color(password_repeat_edit, " Enter your password again", Qt::gray);
+    set_placeholder_color(password_repeat_edit, " Enter your password again", Qt::gray); // setting placeholder text. it is a text that is displayed in the input field when it is empty.
     connect(password_repeat_edit, &QLineEdit::textChanged, this, [=](const QString& text) {
         inputing_field(text, password_repeat_edit, "Repeat your password");
     });
     password_repeat_status = new QLabel();
     set_status_right(password_repeat_status);
 
+    // password and password repeat linedits in one line
     password_layout = new QHBoxLayout;
     add_two_linedits_in_one_line(password_layout, password_edit, password_repeat_edit);
 
+    // password and password repeate statuses in one line
     password_status_layout = new QHBoxLayout;
     add_two_labels_in_one_line(password_status_layout, password_status, password_repeat_status);
 
@@ -133,38 +138,31 @@ Registration::Registration(QWidget *parent) :
 
     connect(registration_button,  &QPushButton::clicked, this, &Registration::validate_registration);
 
+    group_box_layout = new QVBoxLayout(widget);
+    group_box_layout -> setSpacing(0);
+    group_box_layout -> setAlignment(Qt::AlignBottom);
     group_box_layout -> addWidget(registration, 0, Qt::AlignHCenter); // Align to the top and center horizontally
     group_box_layout->addSpacing(50);
-   // group_box_layout -> addWidget(name_edit);
     group_box_layout -> addLayout(name_surname_layout);
-   // group_box_layout->addSpacing(-5);
     group_box_layout -> addLayout(name_surname_status_layout);
-    group_box_layout->addSpacing(10);
+    group_box_layout -> addSpacing(10);
     group_box_layout -> addLayout(mail_age_layout);
-    //group_box_layout->addSpacing(-35);
     group_box_layout -> addLayout(mail_age_status_layout);
-    group_box_layout->addSpacing(10);
+    group_box_layout -> addSpacing(10);
     group_box_layout -> addLayout(phone_username_layout);
-    //group_box_layout->addSpacing(-35);
     group_box_layout -> addLayout(phone_username_status_layout);
     group_box_layout->addSpacing(10);
     group_box_layout -> addLayout(password_layout);
-    //group_box_layout->addSpacing(-35);
-     group_box_layout -> addLayout(password_status_layout);
+    group_box_layout -> addLayout(password_status_layout);
     group_box_layout ->addSpacing(40);
-    //group_box_layout->addSpacing(30);
     group_box_layout -> addWidget(registration_button);
-
-    group_box_layout->addSpacing(30);
-
+    group_box_layout -> addSpacing(30);
 
     layout = new QVBoxLayout(this);
     layout -> setContentsMargins(x, y,  0, 0);
-    layout -> addWidget(l);
-
+    layout -> addWidget(widget);
 
     QPixmap image(":/images/logo2.png");
-
     if (image.isNull()) {
         qDebug() << "Error loading image!";
     } else {
@@ -204,19 +202,18 @@ void Registration::set_status_right(QLabel* label) {
 
 void Registration::add_two_labels_in_one_line(QHBoxLayout* layout, QLabel* first, QLabel* second) {
     layout -> addWidget(first);
-    layout -> addStretch(); // Add a stretch to separate Remember Me and Register
+    layout -> addStretch();
     layout -> addWidget(second);
 }
 
 void Registration::add_two_linedits_in_one_line(QHBoxLayout* layout, QLineEdit* first, QLineEdit* second) {
     layout -> addWidget(first);
-    layout -> addStretch(); // Add a stretch to separate Remember Me and Register
+    layout -> addStretch();
     layout -> addWidget(second);
 }
 
 void Registration::set_lineedit_left(QLineEdit* lineedit) {
     lineedit -> setFixedSize(370, 40);
-    // de left board of groupbox and name_edit be far
     lineedit -> setStyleSheet("margin-left: 20px; border: 2px solid gray; border-radius: 15px; font-size: 20px; color: white; padding: 5px;"); // border-radius: 15px -> this makes the bords rounded, padding: 5px -> this makes starting the text in lineedit from little bit righter from board,
 }
 
@@ -270,7 +267,6 @@ void Registration::validate_registration() {
     } else {
         valid_field(phone_status, "+okay");
     }
-
 
     if (!is_valid_username(username)) {
         not_valid_field(username_status, "*invalid phone number format (10 digits).");
@@ -336,6 +332,8 @@ void Registration::validate_registration() {
              << username_edit -> text() << password_edit -> text();
 
          insert_data(data);
+         SuccessfullRegistration success_window;
+         success_window.exec();
     } else {
         return;
     }
@@ -398,7 +396,6 @@ bool Registration::is_valid_last_name(const QString& last_name) {
     return rx.exactMatch(last_name);
 }
 
-
 bool Registration::is_valid_phone(const QString& phone) {
     // checking if the phone number is 10 digits
     QRegExp rx("^\\d{10}$");
@@ -457,5 +454,5 @@ Registration::~Registration() {
     delete name_surname_layout;
     delete group_box_layout;
     delete layout;
-    delete l;
+    delete widget;
 }

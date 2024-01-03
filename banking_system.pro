@@ -12,12 +12,14 @@ SOURCES += \
     dbmanager.cpp \
     main.cpp \
     login.cpp \
-    registration.cpp
+    registration.cpp \
+    successfullregistration.cpp
 
 HEADERS += \
     dbmanager.h \
     login.h \
-    registration.h
+    registration.h \
+    successfullregistration.h
 
 FORMS +=
 

@@ -20,6 +20,8 @@ class Registration : public QDialog
 public:
     explicit Registration(QWidget *parent = nullptr);
     ~Registration();
+
+private:
     void set_placeholder_color(QLineEdit* lineEdit, const QString& text, const QColor& color);
     void inputing_field(const QString& text, QLineEdit* lineedit, const QString& message);
     void set_status_left(QLabel* label);
@@ -29,7 +31,7 @@ public:
     void set_lineedit_left(QLineEdit* lineedit);
     void set_lineedit_right(QLineEdit* lineedit);
 
-    void validate_registration();
+private:
     bool is_valid_name(const QString& name);
     bool is_valid_last_name(const QString& last_name);
     bool is_valid_date_of_birth(const QString& dob);
@@ -38,14 +40,16 @@ public:
     bool is_valid_age(const QString& age);
     bool is_valid_username(const QString& username);
     bool is_valid_password(const QString& password);
-    void not_valid_field(QLabel* status, const QString& message);
     bool is_valid_password_repeat(const QString& password, const QString& repeated_password);
     void valid_field(QLabel* status, const QString& message);
+    void not_valid_field(QLabel* status, const QString& message);
 
+private:
+    void validate_registration();
     void insert_data(const QStringList& data);
 
 private:
-    QWidget* l;
+    QWidget* widget;
     QVBoxLayout* group_box_layout;
     QVBoxLayout* layout;
     QHBoxLayout* password_status_layout;
