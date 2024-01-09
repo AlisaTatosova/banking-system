@@ -10,7 +10,7 @@ DbManager::DbManager() {
     if (!db.open()) {
         qDebug() << "Error: Couldn't open database. Reason:" << db.lastError().text();
     }
-    create_table("Clients", QStringList() << "Name" << "Surname" << "Email" << "Age" << "Phone" << "Username" << "Password");
+    create_tables();
 }
 
 DbManager::~DbManager() {
@@ -26,9 +26,9 @@ bool DbManager::open_database() {
     // checking for connection
     if (!db.open()) {
         return false;
-    } else {
-        return true;
     }
+
+    return true;
 }
 
 void DbManager::close_database() {
@@ -41,13 +41,40 @@ QSqlDatabase& DbManager::get_database() {
     return db;
 }
 
-void DbManager::create_table(const QString& table_name, const QStringList& column_names) {
+void DbManager::create_tables() {
     QSqlQuery query;
-    QString table = "CREATE TABLE " + table_name + " (";
-    for (const QString& col : column_names) {
-        table += col + " VARCHAR(255), ";
-    }
-    table.chop(2); // removing the trailing comma and space
-    table += ")";
-    query.exec(table);
+    query.exec("CREATE TABLE IF NOT EXISTS clients ("
+               "client_id INTEGER PRIMARY KEY AUTOINCREMENT,"
+               "name TEXT NOT NULL,"
+               "surname TEXT NOT NULL,"
+               "mail TEXT NOT NULL,"
+               "age INTEGER NOT NULL,"
+               "phone TEXT NOT NULL,"
+               "username TEXT UNIQUE NOT NULL,"
+               "password TEXT NOT NULL)");
+
+    query.exec("CREATE TABLE IF NOT EXISTS bank_accounts ("
+                "account_id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                "client_id INTEGER,"
+                "account_number TEXT UNIQUE NOT NULL,"
+                "balance REAL DEFAULT 0,"
+                "FOREIGN KEY (client_id) REFERENCES clients(client_id))");
+
+//            query.exec("CREATE TABLE IF NOT EXISTS bank_cards ("
+//                       "card_id INTEGER PRIMARY KEY AUTOINCREMENT,"
+//                       "client_id INTEGER,"
+//                       "card_number TEXT UNIQUE NOT NULL,"
+//                       "expiration_date DATE,"
+//                       "cvv TEXT,"
+//                       "FOREIGN KEY (client_id) REFERENCES clients(client_id))");
+
+    query.exec("CREATE TABLE IF NOT EXISTS transactions ("
+               "transaction_id INTEGER PRIMARY KEY AUTOINCREMENT,"
+               "account_id INTEGER,"
+               "amount REAL,"
+               "description TEXT,"
+               "timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,"
+               "FOREIGN KEY (account_id) REFERENCES bank_accounts(account_id))");
 }
+
+

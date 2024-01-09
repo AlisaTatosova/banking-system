@@ -3,6 +3,10 @@
         <file>images/logo2.png</file>
         <file>images/eye_icon.png</file>
         <file>images/open_eye.png</file>
+        <file>images/profile.png</file>
+        <file>images/cards.png</file>
+        <file>images/transfer.png</file>
+        <file>images/logout.png</file>
     </qresource>
     <qresource prefix="/images"/>
 </RCC>

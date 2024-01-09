@@ -4,6 +4,7 @@
 #include <QDesktopWidget>
 #include <QDebug>
 #include "registration.h"
+#include "account.h"
 
 Login::Login(QWidget *parent) : QWidget(parent), db(DbManager::instance().get_database()) {
     setWindowTitle("Login window");
@@ -17,8 +18,8 @@ Login::Login(QWidget *parent) : QWidget(parent), db(DbManager::instance().get_da
     window = new QWidget;
     window -> setFixedSize(510, 580);
     window -> setStyleSheet("border: 2px solid gray; border-radius: 15px;");
-    group_box_layout = new QVBoxLayout(window);
 
+    group_box_layout = new QVBoxLayout(window);
     group_box_layout -> setSpacing(0); //vertical spacing between widgets
     group_box_layout -> setAlignment(Qt::AlignBottom);
 
@@ -26,21 +27,12 @@ Login::Login(QWidget *parent) : QWidget(parent), db(DbManager::instance().get_da
     sign_in -> setStyleSheet("margin-right: 35px; color: white; font-size: 45px; border: none; ");
 
     username_edit = new QLineEdit;
-    username_edit -> setFixedSize(420, 45);
-    username_edit -> setStyleSheet("border: 2px solid gray; border-radius: 15px; font-size: 20px; color: white; padding: 5px;"); // border-radius: 15px -> this makes the bords rounded, padding: 5px -> this makes starting the text in lineedit from little bit righter from board,
-    set_placeholder_color(username_edit, " Enter username", Qt::gray);
-    connect(username_edit, &QLineEdit::textChanged, this, &Login::inputing_username);
+    set_linedit(username_edit, "Enter username");
+    password_edit = new QLineEdit;
+    set_linedit(password_edit, "Enter password", true);
 
     login_status = new QLabel();
     login_status -> setStyleSheet("padding: 5px; border: none; color: white; font-size: 12px;");
-
-    password_edit = new QLineEdit;
-    password_edit -> setFixedSize(420, 45);
-    password_edit -> setStyleSheet("border: 2px solid gray; border-radius: 15px; font-size: 20px; color: white; padding: 5px;");
-    set_placeholder_color(password_edit, " Enter password", Qt::gray);
-    password_edit -> setEchoMode(QLineEdit::Password);
-    connect(password_edit, &QLineEdit::textChanged, this, &Login::inputing_password);
-
     password_status = new QLabel();
     password_status -> setStyleSheet("padding: 5px; border: none; color: white; font-size: 12px;");
 
@@ -99,46 +91,37 @@ Login::Login(QWidget *parent) : QWidget(parent), db(DbManager::instance().get_da
     group_box_layout -> addSpacing(20);
 
     // for adding space beetween left board of groupbox and left board of linedit
-    QMargins groupBoxMargins = window -> contentsMargins();
-    groupBoxMargins.setLeft(30);
-    window -> setContentsMargins(groupBoxMargins);
+    QMargins group_box_margins = window -> contentsMargins();
+    group_box_margins.setLeft(30);
+    window -> setContentsMargins(group_box_margins);
 
     layout = new QVBoxLayout(this);
     layout -> setContentsMargins(x, y,  0, 0);
     layout -> addWidget(window);
-
 
     QPixmap image(":/images/logo2.png");
     if (image.isNull()) {
         qDebug() << "Error loading image!";
     } else {
         logo_image = new QLabel(this);
-        logo_image -> setPixmap(image);
+        logo_image -> setPixmap(image.scaled(190, 190));
         logo_image -> setGeometry(screen.width() / 2 - 150, screen.height() / 2 - 400, 200, 200);
     }
 }
 
-void Login::inputing_username(const QString& text) {
+void Login::inputing_field(const QString& text, QLineEdit* line_edit, const QString& message) {
     if (text.isEmpty()) {
-        username_edit -> setPlaceholderText("Enter username");
+        line_edit -> setPlaceholderText(message);
     } else {
-        username_edit -> setPlaceholderText("");
+        line_edit -> setPlaceholderText("");
     }
 }
 
-void Login::inputing_password(const QString& text) {
-    if (text.isEmpty()) {
-        password_edit -> setPlaceholderText("Enter password");
-    } else {
-        password_edit -> setPlaceholderText("");
-    }
-}
-
-void Login::set_placeholder_color(QLineEdit* lineEdit, const QString& text, const QColor& color) {
-    QPalette palette = lineEdit -> palette();
+void Login::set_placeholder_color(QLineEdit* line_edit, const QString& text, const QColor& color) {
+    QPalette palette = line_edit -> palette();
     palette.setColor(QPalette::PlaceholderText, color);
-    lineEdit -> setPalette(palette);
-    lineEdit -> setPlaceholderText(text);
+    line_edit -> setPalette(palette);
+    line_edit -> setPlaceholderText(text);
 }
 
 void Login::show_password_click() {
@@ -164,7 +147,7 @@ void Login::authenticate() {
     }
 
     QSqlQuery query;
-    query.prepare("SELECT * FROM Clients WHERE Username = :username AND Password = :password");
+    query.prepare("SELECT * FROM Clients WHERE username = :username AND password = :password");
     query.bindValue(":username", username);
     query.bindValue(":password", password);
 
@@ -173,6 +156,10 @@ void Login::authenticate() {
         password_status -> setText("Authentication successful!"); // Authentication successful
         login_status -> setStyleSheet("padding: 5px; border: none; color: green; font-size: 12px;");
         password_status -> setStyleSheet("padding: 5px; border: none; color: green; font-size: 12px;");
+        QString name = retrieve_name(username);
+        QString surname = retrieve_surname(username);
+        Account account(nullptr, name, surname, username);
+        account.exec();
     } else {
         login_status -> setText("*Authentication failed. Invalid username or password."); // Authentication failed
         password_status -> setText("*Authentication failed. Invalid username or password."); // Authentication failed
@@ -194,6 +181,54 @@ void Login::register_cliked() {
 
 void Login::forgett_password_button_cliked() {
 
+}
+
+QString Login::retrieve_name(const QString& username) {
+    QString name;
+    QSqlQuery query(db);
+
+    // Prepare a SELECT query to retrieve the name based on the username
+    query.prepare("SELECT name FROM clients WHERE username = :username");
+    query.bindValue(":username", username);
+
+    // Execute the query
+    if (query.exec() && query.next()) {
+        name = query.value("name").toString();
+    } else {
+        qDebug() << "Error retrieving user name:" << query.lastError().text();
+    }
+
+    return name;
+}
+
+QString Login::retrieve_surname(const QString& username) {
+    QString surname;
+
+    QSqlQuery query(db);
+    query.prepare("SELECT surname FROM clients WHERE username = :username");
+    query.bindValue(":username", username);
+
+    if (query.exec() && query.next()) {
+        surname = query.value("surname").toString();
+    } else {
+        qDebug() << "Error retrieving user surname:" << query.lastError().text();
+    }
+
+    return surname;
+}
+
+void Login::set_linedit(QLineEdit* line_edit, const QString& placeholder, bool is_password) {
+    line_edit -> setFixedSize(420, 45);
+    line_edit -> setStyleSheet("border: 2px solid gray; border-radius: 15px; font-size: 20px; color: white; padding: 5px;");
+    set_placeholder_color(line_edit, placeholder, Qt::gray);
+
+    if (is_password) {
+        line_edit -> setEchoMode(QLineEdit::Password);
+    }
+
+    connect(line_edit, &QLineEdit::textChanged, this, [=](const QString& text) {
+        inputing_field(text, line_edit, placeholder);
+    });
 }
 
 Login::~Login() {

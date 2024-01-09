@@ -142,7 +142,7 @@ Registration::Registration(QWidget *parent) :
     group_box_layout -> setSpacing(0);
     group_box_layout -> setAlignment(Qt::AlignBottom);
     group_box_layout -> addWidget(registration, 0, Qt::AlignHCenter); // Align to the top and center horizontally
-    group_box_layout->addSpacing(50);
+    group_box_layout -> addSpacing(50);
     group_box_layout -> addLayout(name_surname_layout);
     group_box_layout -> addLayout(name_surname_status_layout);
     group_box_layout -> addSpacing(10);
@@ -151,7 +151,7 @@ Registration::Registration(QWidget *parent) :
     group_box_layout -> addSpacing(10);
     group_box_layout -> addLayout(phone_username_layout);
     group_box_layout -> addLayout(phone_username_status_layout);
-    group_box_layout->addSpacing(10);
+    group_box_layout -> addSpacing(10);
     group_box_layout -> addLayout(password_layout);
     group_box_layout -> addLayout(password_status_layout);
     group_box_layout ->addSpacing(40);
@@ -290,12 +290,12 @@ void Registration::validate_registration() {
     }
 
     QSqlQuery check_customer;
-    check_customer.prepare("SELECT * FROM Clients WHERE Name = :name AND Surname = :surname");
+    check_customer.prepare("SELECT * FROM Clients WHERE name = :name AND surname = :surname");
     check_customer.bindValue(":name", first_name);
     check_customer.bindValue(":surname", last_name);
 
     QSqlQuery check_username;
-    check_username.prepare("SELECT * FROM Clients WHERE Username = :username");
+    check_username.prepare("SELECT * FROM Clients WHERE username = :username");
     check_username.bindValue(":username", username);
 
 
@@ -342,14 +342,14 @@ void Registration::validate_registration() {
 
 void Registration::insert_data(const QStringList& data) {
     QSqlQuery query;
-    query.prepare("INSERT INTO Clients (Name, Surname, Email, Age, Phone, Username, Password) VALUES (:Name, :Surname, :Email, :Age, :Phone, :Username, :Password)");
-    query.bindValue(":Name", data.value(0));
-    query.bindValue(":Surname", data.value(1));
-    query.bindValue(":Email", data.value(2));
-    query.bindValue(":Age", data.value(3));
-    query.bindValue(":Phone", data.value(4));
-    query.bindValue(":Username", data.value(5));
-    query.bindValue(":Password", data.value(6));
+    query.prepare("INSERT INTO Clients (name, surname, mail, age, phone, username, password) VALUES (:name, :surname, :mail, :age, :phone, :username, :password)");
+    query.bindValue(":name", data.value(0));
+    query.bindValue(":surname", data.value(1));
+    query.bindValue(":mail", data.value(2));
+    query.bindValue(":age", data.value(3));
+    query.bindValue(":phone", data.value(4));
+    query.bindValue(":username", data.value(5));
+    query.bindValue(":password", data.value(6));
 
     if (query.exec()) {
         qDebug() << "Data inserted successfully.";

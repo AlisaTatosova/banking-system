@@ -13,7 +13,6 @@ public:
     SuccessfullRegistration(QWidget *parent = nullptr);
     ~SuccessfullRegistration();
 
-
 private:
     QVBoxLayout* layout;
     QLabel* success;

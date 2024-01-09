@@ -13,8 +13,7 @@ namespace Ui {
 class Registration;
 }
 
-class Registration : public QDialog
-{
+class Registration : public QDialog {
     Q_OBJECT
 
 public:

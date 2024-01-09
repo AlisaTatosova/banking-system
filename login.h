@@ -21,15 +21,19 @@ public:
 
 private slots:
     void authenticate();
-    void inputing_username(const QString& text);
-    void inputing_password(const QString& text);
-    void set_placeholder_color(QLineEdit* lineEdit, const QString& text, const QColor& color);
+    void inputing_field(const QString& text, QLineEdit* line_edit, const QString& message);
+   // void inputing_password(const QString& text);
+    void set_placeholder_color(QLineEdit* line_edit, const QString& text, const QColor& color);
 
     void show_password_click();
     void register_cliked();
     void forgett_password_button_cliked();
 
+    QString retrieve_name(const QString& username);
+    QString retrieve_surname(const QString& username);
+
 private:
+    void set_linedit(QLineEdit* line_edit, const QString& placeholder, bool is_password = false);
     QWidget* window;
     QVBoxLayout* group_box_layout;
     QHBoxLayout* password_layout;

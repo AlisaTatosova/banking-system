@@ -7,7 +7,7 @@
 #include <QStyle>
 
 SuccessfullRegistration::SuccessfullRegistration(QWidget *parent) : QDialog(parent) {
-   setWindowFlags(windowFlags() | Qt::WindowMaximizeButtonHint);
+    setWindowFlags(windowFlags() | Qt::WindowMaximizeButtonHint);
 
     this -> setStyleSheet("background-color: black;");
     setMinimumSize(500, 200);

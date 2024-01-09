@@ -9,7 +9,9 @@ public:
     bool open_database();
     void close_database();
     QSqlDatabase& get_database();
-    void create_table(const QString& tableName, const QStringList& column_names);
+    static void create_tables();
+    static bool deposit(int account_id, double amount);
+    static bool withdraw(int account_id, double amount);
 
 private:
     DbManager();
