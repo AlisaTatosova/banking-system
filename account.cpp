@@ -1,6 +1,7 @@
 #include "account.h"
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QTableWidget>
 
 Account::Account(QWidget *parent, const QString& name, const QString& surname, const QString& username)
     : QDialog(parent), m_name(name), m_surname(surname), m_username(username) {
@@ -12,7 +13,7 @@ Account::Account(QWidget *parent, const QString& name, const QString& surname, c
 
     buttons_widget = new QWidget;
     buttons_widget -> setFixedSize(450, screen.height());
-    buttons_widget -> setStyleSheet(" border: 1px solid rgba(169, 169, 169, 0.5);  border-bottom: none;  border-top: none; border-radius: 15px;");
+    buttons_widget -> setStyleSheet(" border: 1px solid rgba(169, 169, 169, 0.5); border-radius: 15px;");
 
     group_box_layout = new QVBoxLayout(buttons_widget);
     group_box_layout -> setSpacing(0); //vertical spacing between widgets
@@ -59,19 +60,37 @@ Account::Account(QWidget *parent, const QString& name, const QString& surname, c
     group_box_layout -> addWidget(logout_container);
     group_box_layout -> addSpacing(40);
 
-
-
-
     features_widget = new QWidget;
     features_widget -> setFixedSize(450, screen.height());
-    features_widget -> setStyleSheet(" border: 1px solid rgba(169, 169, 169, 0.5);  border-bottom: none; border-top: none; border-radius: 15px; ");
+    features_widget -> setStyleSheet(" border: 1px solid rgba(169, 169, 169, 0.5); border-radius: 15px; ");
     bank_features = new QVBoxLayout(features_widget);
     bank_features -> setSpacing(0); //vertical spacing between widgets
     bank_features -> setAlignment(Qt::AlignTop);
 
+    about_us = new QLabel("About us");
+    about_us -> setStyleSheet("border: none;  border-bottom: 1px solid rgba(169, 169, 169, 0.5); color: white; font-size: 40px;  ");
+    about_us -> setAlignment(Qt::AlignCenter);
+
+    QString sentence = " The bank is known for its user-friendly\n online banking platform, allowing\n customers to conveniently manage \n their accounts and conduct transactions \n from the comfort of their homes";
+    info = new QLabel(sentence);
+    info -> setStyleSheet("margin-left: 30px; border: none; color: white; font-size: 20px;  ");
+
+
+    bank_features -> addSpacing(20);
+    bank_features -> addWidget(about_us);
+    bank_features -> addSpacing(30);
+    bank_features -> addWidget(info);
+    bank_features -> addSpacing(30);
+
+    centeral_screen = new QWidget;
+    centeral_screen -> setFixedSize(screen.width() - features_widget -> width() - buttons_widget -> width() - 40, screen.height());
+    centeral_screen -> setStyleSheet(" border: 1px solid rgba(169, 169, 169, 0.5); border-radius: 15px; ");
+    center = new QVBoxLayout(centeral_screen);
+
 
     layout = new QHBoxLayout(this);
     layout -> addWidget(buttons_widget,  0, Qt::AlignTop | Qt::AlignLeft);
+    layout -> addWidget(centeral_screen, 0, Qt::AlignTop | Qt::AlignCenter);
     layout -> addWidget(features_widget,  0, Qt::AlignTop | Qt::AlignRight);
 
 }
@@ -81,6 +100,7 @@ void Account::create_logo_button(QFrame* container, QHBoxLayout*& layout, QPushB
 
     button = new QPushButton(text);
     button -> setStyleSheet("border: none; font-size: 30px; color: white; text-align: left; padding-left: 30px;");
+
 
     layout = new QHBoxLayout(container);
     QPixmap image(image_path);
@@ -132,9 +152,11 @@ Account::~Account() {
     delete transactions_container;
     delete logout_container;
     delete group_box_layout;
+    delete center;
     delete bank_features;
     delete layout;
     delete buttons_widget;
+    delete centeral_screen;
     delete features_widget;
 
 }

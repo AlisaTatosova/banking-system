@@ -8,6 +8,7 @@
 
 Login::Login(QWidget *parent) : QWidget(parent), db(DbManager::instance().get_database()) {
     setWindowTitle("Login window");
+    setWindowFlags(this -> windowFlags() & ~Qt::WindowMinimizeButtonHint);
     QRect screen = QApplication::desktop() -> screenGeometry();
     this -> setGeometry(screen);
     this -> setStyleSheet("background-color: black;");
@@ -104,7 +105,7 @@ Login::Login(QWidget *parent) : QWidget(parent), db(DbManager::instance().get_da
         qDebug() << "Error loading image!";
     } else {
         logo_image = new QLabel(this);
-        logo_image -> setPixmap(image.scaled(190, 190));
+        logo_image -> setPixmap(image);
         logo_image -> setGeometry(screen.width() / 2 - 150, screen.height() / 2 - 400, 200, 200);
     }
 }

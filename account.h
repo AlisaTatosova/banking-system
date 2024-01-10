@@ -42,10 +42,14 @@ private:
     QHBoxLayout* logout;
     QLabel* logout_label;
     QFrame* logout_container;
+    QWidget* centeral_screen;
+    QVBoxLayout* center;
     QWidget* features_widget;
     QHBoxLayout* layout;
     QVBoxLayout* bank_features;
 
+    QLabel* about_us;
+    QLabel* info;
 };
 
 #endif // ACCOUNT_H
