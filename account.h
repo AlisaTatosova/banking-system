@@ -17,8 +17,12 @@ public:
     explicit Account(QWidget *parent = nullptr, const QString& name = "", const QString& surname = "", const QString& username = "");
     ~Account();
     void handle_account_operations();
-    void create_logo_button(QFrame* container, QHBoxLayout*& layout, QPushButton*& button, QLabel*& label, const QString& text, const QString& image_path);
+    std::tuple<QHBoxLayout*, QPushButton* ,QLabel*> create_logo_button(QFrame* container, const QString& text, const QString& image_path);
     void add_logo_and_button_in_one_line(QHBoxLayout* layout, QLabel* logo, QPushButton* button);
+    void set_logo();
+    void add_to_group_box();
+    void setting_pictures_for_echange();
+    void add_to_bank_features();
 
 private:
     QString m_name;
@@ -29,7 +33,6 @@ private:
     QPushButton* profile_button;
     QPushButton* cards_button;
     QPushButton* transfer_button;
-    QPushButton* bill_button;
     QPushButton* logout_button;
     QLabel* logo_image;
     QHBoxLayout* profile;
@@ -49,17 +52,11 @@ private:
     QWidget* features_widget;
     QHBoxLayout* layout;
     QVBoxLayout* bank_features;
-
     QLabel* about_us;
     QLabel* info;
-
     QLabel* exchange;
-
-
-
-    QLabel* name_surname_label;
-
     QTableWidget* table_exchange;
+    QLabel* name_surname_label;
     QLabel* usd_label;
     QLabel* eur_label;
     QLabel* uah_label;
