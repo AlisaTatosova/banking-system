@@ -1,7 +1,6 @@
 #include "account.h"
 #include <QApplication>
 #include <QDesktopWidget>
-#include <QTableWidget>
 
 Account::Account(QWidget *parent, const QString& name, const QString& surname, const QString& username)
     : QDialog(parent), m_name(name), m_surname(surname), m_username(username) {
@@ -23,7 +22,6 @@ Account::Account(QWidget *parent, const QString& name, const QString& surname, c
     profile_container = new QFrame;
     create_logo_button(profile_container, profile, profile_button, profile_label, " Profile                      >  ", ":/images/profile.png");
 
-    // Usage for cards
     cards_container = new QFrame;
     create_logo_button(cards_container,cards, cards_button, cards_label, "Cards                       >  ", ":/images/cards.png");
 
@@ -60,6 +58,7 @@ Account::Account(QWidget *parent, const QString& name, const QString& surname, c
     group_box_layout -> addWidget(logout_container);
     group_box_layout -> addSpacing(40);
 
+
     features_widget = new QWidget;
     features_widget -> setFixedSize(450, screen.height());
     features_widget -> setStyleSheet(" border: 1px solid rgba(169, 169, 169, 0.5); border-radius: 15px; ");
@@ -75,17 +74,73 @@ Account::Account(QWidget *parent, const QString& name, const QString& surname, c
     info = new QLabel(sentence);
     info -> setStyleSheet("margin-left: 30px; border: none; color: white; font-size: 20px;  ");
 
+    exchange = new QLabel("Exchange");
+    exchange -> setStyleSheet("border: none;  border-bottom: 1px solid rgba(169, 169, 169, 0.5); color: white; font-size: 38px;  ");
+    exchange -> setAlignment(Qt::AlignCenter);
+
+    table_exchange = new QTableWidget();
+    table_exchange -> setRowCount(4);
+    table_exchange -> setColumnCount(4);
+
+    QStringList currencies = {"Currency", "1 USD", "1 EUR", "1 UAH"};
+    QStringList buys = {"Buy", "410", "418", "8"};
+    QStringList sells = {"Sell", "412", "420", "9.5"};
+
+    for (int row = 0; row < currencies.size(); ++row) {
+        table_exchange -> setItem(row, 1, new QTableWidgetItem(currencies[row]));
+        table_exchange -> setItem(row, 2, new QTableWidgetItem(buys[row]));
+        table_exchange -> setItem(row, 3, new QTableWidgetItem(sells[row]));
+    }
+
+    QPixmap usd(":/images/USD.png");
+    usd_label = new QLabel();
+    usd_label -> setPixmap(usd.scaled(45, 25));
+    usd_label -> setStyleSheet("margin-left: 20px; border: none; ");
+    table_exchange -> setCellWidget(1, 0, usd_label);
+
+    QPixmap eur(":/images/EUR.png");
+    eur_label = new QLabel();
+    eur_label -> setPixmap(eur.scaled(45, 25));
+    eur_label -> setStyleSheet("margin-left: 20px; border: none; ");
+    table_exchange -> setCellWidget(2, 0, eur_label);
+
+    QPixmap uah(":/images/UAH.png");
+    uah_label = new QLabel();
+    uah_label -> setPixmap(uah.scaled(45, 25));
+    uah_label -> setStyleSheet("margin-left: 20px; border: none; ");
+    table_exchange -> setCellWidget(3, 0, uah_label);
+
+    table_exchange -> setStyleSheet("color: white; font-size: 22px; border: none");
+    table_exchange -> setColumnWidth(0, 80); // to make 0r column less wider
+
+    table_exchange -> verticalHeader() -> setVisible(false);
+    table_exchange -> horizontalHeader() -> setVisible(false);
+
 
     bank_features -> addSpacing(20);
     bank_features -> addWidget(about_us);
     bank_features -> addSpacing(30);
     bank_features -> addWidget(info);
+    bank_features -> addSpacing(35);
+    bank_features -> addWidget(exchange);
     bank_features -> addSpacing(30);
+    bank_features -> addWidget(table_exchange);
+    bank_features -> addSpacing(30);
+
 
     centeral_screen = new QWidget;
     centeral_screen -> setFixedSize(screen.width() - features_widget -> width() - buttons_widget -> width() - 40, screen.height());
     centeral_screen -> setStyleSheet(" border: 1px solid rgba(169, 169, 169, 0.5); border-radius: 15px; ");
     center = new QVBoxLayout(centeral_screen);
+    center -> setSpacing(0); //vertical spacing between widgets
+    center -> setAlignment(Qt::AlignTop);
+    center -> addSpacing(25);
+
+
+    name_surname_label = new QLabel(m_name.toUpper() + " " + m_surname.toUpper());
+    name_surname_label -> setStyleSheet("border: none;  border-bottom: 1px solid rgba(169, 169, 169, 0.5); color: white; font-size: 50px;  ");
+    name_surname_label -> setAlignment(Qt::AlignCenter);
+    center -> addWidget(name_surname_label);
 
 
     layout = new QHBoxLayout(this);
@@ -151,6 +206,9 @@ Account::~Account() {
     delete cards_container;
     delete transactions_container;
     delete logout_container;
+    delete about_us;
+    delete info;
+    delete name_surname_label;
     delete group_box_layout;
     delete center;
     delete bank_features;

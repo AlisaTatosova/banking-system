@@ -6,6 +6,8 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QtDebug>
+#include <QTableWidget>
+#include <QHeaderView>
 
 
 class Account : public QDialog {
@@ -50,6 +52,17 @@ private:
 
     QLabel* about_us;
     QLabel* info;
+
+    QLabel* exchange;
+
+
+
+    QLabel* name_surname_label;
+
+    QTableWidget* table_exchange;
+    QLabel* usd_label;
+    QLabel* eur_label;
+    QLabel* uah_label;
 };
 
 #endif // ACCOUNT_H

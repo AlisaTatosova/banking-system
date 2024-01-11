@@ -77,6 +77,15 @@ Login::Login(QWidget *parent) : QWidget(parent), db(DbManager::instance().get_da
     register_button -> setStyleSheet("margin-right: 80px; border: none; border-radius: 15px; font-size: 15px; color: white; background-color: black; ");
     connect(register_button, &QPushButton::clicked, this, &Login::register_cliked);
 
+
+
+
+    terminal = new QPushButton("Terminal");
+    terminal -> setFixedSize(210, 40);
+    terminal -> setStyleSheet("margin-right: 80px; border: none; border-radius: 15px; font-size: 15px; color: white; background-color: black; ");
+    connect(terminal, &QPushButton::clicked, this, &Login::terminal_cliked);
+
+
     group_box_layout -> addWidget(sign_in, 0, Qt::AlignHCenter); // Align to the top and center horizontally
     group_box_layout -> addSpacing(35);
     group_box_layout -> addWidget(username_edit);
@@ -133,6 +142,10 @@ void Login::show_password_click() {
         password_edit -> setEchoMode(QLineEdit::Password);
         show_password_button -> setIcon(QIcon(":/images/eye_icon.png"));
     }
+}
+
+void Login::terminal_cliked() {
+
 }
 
 void Login::authenticate() {

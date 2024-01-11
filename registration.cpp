@@ -269,7 +269,7 @@ void Registration::validate_registration() {
     }
 
     if (!is_valid_username(username)) {
-        not_valid_field(username_status, "*invalid phone number format (10 digits).");
+        not_valid_field(username_status, "*invalid username.");
         invalid = true;
     } else {
         valid_field(username_status, "+okay");

@@ -21,14 +21,14 @@ public:
 
 private slots:
     void authenticate();
-    void inputing_field(const QString& text, QLineEdit* line_edit, const QString& message);
-   // void inputing_password(const QString& text);
-    void set_placeholder_color(QLineEdit* line_edit, const QString& text, const QColor& color);
-
     void show_password_click();
     void register_cliked();
     void forgett_password_button_cliked();
+    void terminal_cliked();
 
+private:
+    void inputing_field(const QString& text, QLineEdit* line_edit, const QString& message);
+    void set_placeholder_color(QLineEdit* line_edit, const QString& text, const QColor& color);
     QString retrieve_name(const QString& username);
     QString retrieve_surname(const QString& username);
 
@@ -52,6 +52,9 @@ private:
     QCheckBox* remember_me_checkbox;
 
     QSqlDatabase& db;
+
+
+    QPushButton* terminal;
 };
 
 #endif // LOGIN_H

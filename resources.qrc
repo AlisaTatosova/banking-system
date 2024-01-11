@@ -7,6 +7,9 @@
         <file>images/cards.png</file>
         <file>images/transfer.png</file>
         <file>images/logout.png</file>
+        <file>images/USD.png</file>
+        <file>images/EUR.png</file>
+        <file>images/UAH.png</file>
     </qresource>
     <qresource prefix="/images"/>
 </RCC>
