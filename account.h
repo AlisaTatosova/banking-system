@@ -13,6 +13,9 @@
 class Account : public QDialog {
     Q_OBJECT
 
+private slots:
+  //  void cards_button_cliked();
+
 public:
     explicit Account(QWidget *parent = nullptr, const QString& name = "", const QString& surname = "", const QString& username = "");
     ~Account();

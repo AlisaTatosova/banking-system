@@ -31,6 +31,12 @@ private:
     void set_placeholder_color(QLineEdit* line_edit, const QString& text, const QColor& color);
     QString retrieve_name(const QString& username);
     QString retrieve_surname(const QString& username);
+    void set_password();
+    void set_login_button();
+    void set_register_button();
+    void add_to_group_box();
+    void set_layout();
+    void set_logo();
 
 private:
     void set_linedit(QLineEdit* line_edit, const QString& placeholder, bool is_password = false);

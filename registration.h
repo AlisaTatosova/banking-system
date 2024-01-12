@@ -29,6 +29,10 @@ private:
     void add_two_linedits_in_one_line(QHBoxLayout* layout, QLineEdit* first, QLineEdit* second);
     void set_lineedit_left(QLineEdit* lineedit);
     void set_lineedit_right(QLineEdit* lineedit);
+    void set_left_field(QLineEdit* lineedit,  QLabel* status, const QString& message, bool is_password = false);
+    void set_right_field(QLineEdit* lineedit,  QLabel* status, const QString& message, bool is_password = false);
+    void set_logo();;
+    void set_group_box();
 
 private:
     bool is_valid_name(const QString& name);
