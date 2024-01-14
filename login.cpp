@@ -65,6 +65,7 @@ Login::Login(QWidget *parent) : QWidget(parent), db(DbManager::instance().get_da
 
     layout = new QVBoxLayout(this);
     set_layout();
+    logo_image = new QLabel(this);
     set_logo();
 
 }
@@ -100,7 +101,6 @@ void Login::set_logo() {
     if (image.isNull()) {
         qDebug() << "Error loading image!";
     } else {
-        logo_image = new QLabel(this);
         logo_image -> setPixmap(image);
         logo_image -> setGeometry(screen.width() / 2 - 150, screen.height() / 2 - 400, 200, 200);
     }

@@ -10,6 +10,8 @@
         <file>images/USD.png</file>
         <file>images/EUR.png</file>
         <file>images/UAH.png</file>
+        <file>images/business_card.JPG</file>
+        <file>images/visa_card.JPG</file>
     </qresource>
     <qresource prefix="/images"/>
 </RCC>

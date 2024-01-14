@@ -14,18 +14,22 @@ class Account : public QDialog {
     Q_OBJECT
 
 private slots:
-  //  void cards_button_cliked();
+    void cards_button_cliked();
+    void apply_for_card_button_cliked();
 
 public:
     explicit Account(QWidget *parent = nullptr, const QString& name = "", const QString& surname = "", const QString& username = "");
     ~Account();
     void handle_account_operations();
-    std::tuple<QHBoxLayout*, QPushButton* ,QLabel*> create_logo_button(QFrame* container, const QString& text, const QString& image_path);
+    void create_logo_button(QHBoxLayout* hbox, QPushButton* button, QLabel* label, const QString& image_path);
     void add_logo_and_button_in_one_line(QHBoxLayout* layout, QLabel* logo, QPushButton* button);
     void set_logo();
+    void cards_section_handler();
+    void set_cards(QLabel* card_image, const QString& path);
     void add_to_group_box();
     void setting_pictures_for_echange();
     void add_to_bank_features();
+
 
 private:
     QString m_name;
@@ -63,6 +67,20 @@ private:
     QLabel* usd_label;
     QLabel* eur_label;
     QLabel* uah_label;
+
+    QPushButton* my_cards;
+    QPushButton* apply_for_cards;
+    QLabel* card_label;
+
+
+
+    QLabel* business_card_image;
+    QLabel* visa_card_image;
+    QLabel* business_card;
+    QLabel* visa_card;
+    QPushButton* apply_business_card;
+    QPushButton* apply_visa_card;;
+
 };
 
 #endif // ACCOUNT_H

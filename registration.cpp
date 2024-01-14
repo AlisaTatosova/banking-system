@@ -103,6 +103,7 @@ Registration::Registration(QWidget *parent) :
     layout -> setContentsMargins(x, y,  0, 0);
     layout -> addWidget(widget);
 
+    logo_image = new QLabel(this);
     set_logo();
 }
 
@@ -133,7 +134,6 @@ void Registration::set_logo() {
     if (image.isNull()) {
         qDebug() << "Error loading image!";
     } else {
-        logo_image = new QLabel(this);
         logo_image -> setPixmap(image);
         logo_image -> setGeometry((screen.width()) / 2 - 145, (screen.height()) / 2 - 435, 200, 200);
     }
