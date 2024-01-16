@@ -320,7 +320,7 @@ void Registration::validate_registration() {
              << username_edit -> text() << password_edit -> text();
 
          insert_data(data);
-         SuccessfullRegistration success_window;
+         SuccessfullRegistration success_window(nullptr, "You are successfully registered");
          success_window.exec();
     } else {
         return;

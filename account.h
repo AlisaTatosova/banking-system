@@ -8,6 +8,8 @@
 #include <QtDebug>
 #include <QTableWidget>
 #include <QHeaderView>
+#include <QSqlQuery>
+#include <QSqlError>
 
 
 class Account : public QDialog {
@@ -16,6 +18,8 @@ class Account : public QDialog {
 private slots:
     void cards_button_cliked();
     void apply_for_card_button_cliked();
+    void apply_button_is_cliked();
+    void my_cards_button_cliked();
 
 public:
     explicit Account(QWidget *parent = nullptr, const QString& name = "", const QString& surname = "", const QString& username = "");
@@ -29,6 +33,8 @@ public:
     void add_to_group_box();
     void setting_pictures_for_echange();
     void add_to_bank_features();
+    void hide_centeral_screen();
+
 
 
 private:
@@ -79,7 +85,12 @@ private:
     QLabel* business_card;
     QLabel* visa_card;
     QPushButton* apply_business_card;
-    QPushButton* apply_visa_card;;
+    QPushButton* apply_visa_card;
+
+    long long random;
+    QLabel* my_cards_business_card;
+    QLabel* my_card_business_card_image;
+
 
 };
 

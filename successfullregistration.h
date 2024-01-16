@@ -10,7 +10,7 @@ class SuccessfullRegistration : public QDialog {
     Q_OBJECT
 
 public:
-    SuccessfullRegistration(QWidget *parent = nullptr);
+    SuccessfullRegistration(QWidget *parent = nullptr, const QString& text = "");
     ~SuccessfullRegistration();
 
 private:

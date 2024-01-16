@@ -53,20 +53,15 @@ void DbManager::create_tables() {
                "username TEXT UNIQUE NOT NULL,"
                "password TEXT NOT NULL)");
 
-    query.exec("CREATE TABLE IF NOT EXISTS bank_accounts ("
-                "account_id INTEGER PRIMARY KEY AUTOINCREMENT,"
-                "client_id INTEGER,"
-                "account_number TEXT UNIQUE NOT NULL,"
-                "balance REAL DEFAULT 0,"
-                "FOREIGN KEY (client_id) REFERENCES clients(client_id))");
+    query.exec("CREATE TABLE IF NOT EXISTS bank_cards ("
+               "card_id INTEGER PRIMARY KEY AUTOINCREMENT,"
+               "client_id INTEGER,"
+               "card_number TEXT UNIQUE NOT NULL,"
+               "card_type TEXT NOT NULL,"
+               "balance REAL DEFAULT 0.0,"
+               "FOREIGN KEY (client_id) REFERENCES clients(client_id))");
 
-//            query.exec("CREATE TABLE IF NOT EXISTS bank_cards ("
-//                       "card_id INTEGER PRIMARY KEY AUTOINCREMENT,"
-//                       "client_id INTEGER,"
-//                       "card_number TEXT UNIQUE NOT NULL,"
-//                       "expiration_date DATE,"
-//                       "cvv TEXT,"
-//                       "FOREIGN KEY (client_id) REFERENCES clients(client_id))");
+
 
     query.exec("CREATE TABLE IF NOT EXISTS transactions ("
                "transaction_id INTEGER PRIMARY KEY AUTOINCREMENT,"

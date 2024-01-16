@@ -2,29 +2,51 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QPainter>
+#include "successfullregistration.h"
 
-void Account::cards_button_cliked() {
-    for (int i = 0; i < center -> count(); ++i) {
-        QWidget* widget = center -> itemAt(i)-> widget();
+void Account::hide_centeral_screen() {
+    for (int i = 0; i < center->count(); ++i) {
+        QWidget* widget = center->itemAt(i)->widget();
         if (widget) {
-            widget -> hide();
+            // Toggle the visibility of the widget
+            widget-> hide();
         }
     }
+}
 
-    center -> addSpacing(25);
+void Account::cards_button_cliked() {
+    hide_centeral_screen();
+    // for cliking button cards secons time
+    card_label -> show();
+    my_cards -> show();
+    apply_for_cards -> show();
+
+    card_label -> setText("Cards");
+
     card_label -> setAlignment(Qt::AlignCenter);
+  //  center -> addSpacing(25);
     center -> addWidget(card_label);
     center -> addSpacing(250);
     center -> addWidget(my_cards, 0, Qt::AlignCenter);
     center -> addSpacing(50);
     center -> addWidget(apply_for_cards, 0, Qt::AlignCenter);
-    center -> addSpacing(-325);
+    center -> addSpacing(-300);
+
+    connect(apply_business_card, &QPushButton::clicked, this, &Account::apply_button_is_cliked);
+    connect(apply_visa_card, &QPushButton::clicked, this, &Account::apply_button_is_cliked);
 }
 
 void Account::apply_for_card_button_cliked() {
-    my_cards -> hide();
-    apply_for_cards -> hide();
+    hide_centeral_screen();
+    card_label -> show();
+    business_card -> show();
+    visa_card -> show();
+    apply_business_card -> show();
+    apply_visa_card  -> show();
+    business_card_image -> show();
+    visa_card_image -> show();
 
+    card_label -> setText("Apply for cards");
     business_card -> setStyleSheet("border: none; color: white; font-size: 38px;");
     visa_card -> setStyleSheet("border: none;  border-top: 1px solid rgba(169, 169, 169, 0.5); color: white; font-size: 38px;");
     apply_business_card -> setStyleSheet("border: 2px solid grey; border-radius: 15px; font-size: 25px; color: white;");
@@ -33,7 +55,7 @@ void Account::apply_for_card_button_cliked() {
     apply_visa_card -> setFixedSize(300, 45);
 
 
-    center -> addSpacing(50);
+    center -> addSpacing(30);
     center -> addWidget(business_card);
     center -> addSpacing(20);
     set_cards(business_card_image, ":/images/business_card.JPG");
@@ -45,7 +67,6 @@ void Account::apply_for_card_button_cliked() {
     set_cards(visa_card_image, ":/images/visa_card.JPG");
     center -> addSpacing(30);
     center -> addWidget(apply_visa_card, 0, Qt::AlignCenter);
-
     center -> addSpacing(-150);
 }
 
@@ -77,6 +98,7 @@ void Account::set_cards(QLabel* card_image, const QString& path) {
 }
 
 void Account::cards_section_handler() {
+    card_label -> setText("My cards");
     card_label -> setStyleSheet("border: none; border-bottom: 1px solid rgba(169, 169, 169, 0.5); font-size: 40px; color: white;  ");
     my_cards -> setFixedSize(600, 60);
     my_cards -> setStyleSheet("border-radius: 15px; font-size: 30px; color: white; ");
@@ -84,6 +106,73 @@ void Account::cards_section_handler() {
     apply_for_cards -> setStyleSheet("border-radius: 15px; font-size: 30px; color: white; ");
     connect(cards_button, &QPushButton::clicked, this, &Account::cards_button_cliked);
     connect(apply_for_cards, &QPushButton::clicked, this, &Account::apply_for_card_button_cliked);
+}
+
+void Account::my_cards_button_cliked() {
+    hide_centeral_screen();
+
+    card_label -> show();
+    card_label -> setText("My cards");
+    my_card_business_card_image -> show();
+    business_card -> show();
+    business_card -> setStyleSheet("border: none; color: white; font-size: 38px;");
+
+    QString type = "business";  // Change this based on the actual type
+
+    // checking if the client with the given name and surname exists
+    QSqlQuery check_client_query;
+    check_client_query.prepare("SELECT client_id FROM clients WHERE name = :name AND surname = :surname");
+    check_client_query.bindValue(":name", m_name);
+    check_client_query.bindValue(":surname", m_surname);
+
+    if (check_client_query.exec() && check_client_query.next()) {
+        // getting the client_id of the existing client
+        int client_id = check_client_query.value(0).toInt();
+
+        // checking if a card with the given client ID and card type exists
+        QSqlQuery check_card_query;
+        check_card_query.prepare("SELECT card_number FROM bank_cards WHERE client_id = :client_id AND card_type = :card_type");
+        check_card_query.bindValue(":client_id", client_id);
+        check_card_query.bindValue(":card_type", type);
+
+        if (check_card_query.exec() && check_card_query.next()) {
+           // card with the given client ID and card type exists
+            QPixmap image(":/images/business_card.JPG");
+            QPixmap scaled = image.scaled(400, 220);
+
+            if (scaled.isNull()) {
+                qDebug() << "Error loading image!";
+            } else {
+                QPainter painter(&scaled);
+
+                QFont font;
+                font.setPointSize(18);
+                painter.setFont(font);
+
+                painter.setPen(Qt::white); // text color
+//                qDebug() << check_card_query.value(2).toString();
+                long long card_num = check_card_query.value(0).toLongLong();
+                painter.drawText(60, scaled.height() - 70, "**** **** **** " + QString::number(card_num % 10000)); // position of text !!!!!!!!!!!!!!!!!!!!!!!!!!!
+                font.setPointSize(14);
+                painter.setFont(font);
+                painter.drawText(20, scaled.height() - 15, m_name.toUpper() + " " + m_surname.toUpper());
+                painter.end(); // end the painting
+
+                my_card_business_card_image -> setPixmap(scaled);
+                my_card_business_card_image -> setStyleSheet("border: none;");
+                my_card_business_card_image -> setAlignment(Qt::AlignCenter);
+
+                center -> addSpacing(30);
+                center -> addWidget(business_card);
+                center -> addSpacing(20);
+                center -> addWidget(my_card_business_card_image);
+                //business_card_layout -> addWidget(card_image, 0, Qt::AlignTop);
+                center -> addSpacing(-50);
+
+            }
+        }
+    }
+
 }
 
 
@@ -122,20 +211,25 @@ Account::Account(QWidget *parent, const QString& name, const QString& surname, c
     cards_label = new QLabel();
     create_logo_button(cards, cards_button, cards_label, ":/images/cards.png");
 
-    business_card_image = new QLabel();
-    visa_card_image = new QLabel();
-    business_card = new QLabel("Business Card");
+    business_card_image = new QLabel(); // business card image in apply for cards section
+    visa_card_image = new QLabel(); // visa card image in apply for cards section
+    business_card = new QLabel("Business Card"); // businness card name label in apply for cards section
     business_card -> setAlignment(Qt::AlignHCenter);
-    visa_card = new QLabel("Visa Card");
+    visa_card = new QLabel("Visa Card"); // vissa card name label in apply for cards section
     visa_card -> setAlignment(Qt::AlignHCenter);
-    apply_visa_card = new QPushButton("Apply");
-    apply_business_card = new QPushButton("Apply");
+    apply_visa_card = new QPushButton("Apply");  // button for applying for visa card in apply for cards section
+    apply_business_card = new QPushButton("Apply");  // button for applying for business card in apply for cards section
+
+    my_cards_business_card = new QLabel(); // for businees card label in section my cards
+    my_card_business_card_image = new QLabel(); // for business card label in my cards section
 
 
     card_label = new QLabel("Cards");    
     my_cards = new QPushButton("My cards");
     apply_for_cards = new QPushButton("Apply for cards"); 
     cards_section_handler();
+
+    connect(my_cards, &QPushButton::clicked, this, &Account::my_cards_button_cliked);
 
 
     // using container to make same border for transaction logo and button
@@ -289,7 +383,6 @@ void Account::setting_pictures_for_echange() {
 }
 
 void Account::create_logo_button(QHBoxLayout* hbox, QPushButton* button, QLabel* label, const QString& image_path) {
-
     button -> setStyleSheet("border: none; font-size: 30px; color: white; text-align: left; padding-left: 30px;");
     QPixmap image(image_path);
     if (image.isNull()) {
@@ -319,6 +412,61 @@ void Account::add_logo_and_button_in_one_line(QHBoxLayout* layout, QLabel* logo,
     layout -> addStretch();
     layout -> addWidget(button);
 }
+
+void Account::apply_button_is_cliked() {
+    std::srand(static_cast<unsigned>(std::time(0)));
+    // generating a 16-digit random number
+    random = static_cast<long long>(std::rand()) % 9000000000000000 + 1000000000000000;
+
+    QString type = "business";  // Change this based on the actual type
+
+    // Check if the client with the given name and surname exists
+    QSqlQuery check_client_query;
+    check_client_query.prepare("SELECT client_id FROM clients WHERE name = :name AND surname = :surname");
+    check_client_query.bindValue(":name", m_name);
+    check_client_query.bindValue(":surname", m_surname);
+
+    if (check_client_query.exec() && check_client_query.next()) {
+        // getting the client_id of the existing client
+        int client_id = check_client_query.value(0).toInt();
+
+        // Check if a card with the given client ID and card type already exists
+        QSqlQuery check_card_query;
+        check_card_query.prepare("SELECT card_id FROM bank_cards WHERE client_id = :client_id AND card_type = :card_type");
+        check_card_query.bindValue(":client_id", client_id);
+        check_card_query.bindValue(":card_type", type);
+
+        if (check_card_query.exec() && check_card_query.next()) {
+           // card with the given client ID and card type already exists
+           SuccessfullRegistration success_window(nullptr, "You already have business card");
+           success_window.exec();
+           qDebug() << "You already have a card of type " << type << " for client: " << m_name << " " << m_surname;
+           return;
+        }
+
+        // inserting new card information with the associated client_id and card type
+        QSqlQuery insert_card_query;
+        insert_card_query.prepare("INSERT INTO bank_cards (client_id, card_number, card_type) VALUES (:client_id, :card_number, :card_type)");
+        insert_card_query.bindValue(":client_id", client_id);
+        insert_card_query.bindValue(":card_number", QString::number(random));
+        insert_card_query.bindValue(":card_type", type);
+
+        if (insert_card_query.exec()) {
+            qDebug() << "Card information inserted successfully for client: " << m_name << " " << m_surname;
+        } else {
+            qDebug() << "Error inserting card information:" << insert_card_query.lastError().text();
+            return;
+        }
+    } else {
+        qDebug() << "Client with name: " << m_name << " and surname: " << m_surname << " not found.";
+        return;
+    }
+
+    SuccessfullRegistration success_window(nullptr, "You are applied for card");
+    success_window.exec();
+}
+
+
 
 Account::~Account() {
     delete profile_button;
@@ -363,6 +511,8 @@ Account::~Account() {
     delete visa_card_image;
     delete apply_business_card;
     delete apply_visa_card;
+    delete my_cards_business_card;
+    delete my_card_business_card_image;
     delete group_box_layout;
     delete center;
     delete bank_features;
@@ -370,5 +520,4 @@ Account::~Account() {
     delete buttons_widget;
     delete centeral_screen;
     delete features_widget;
-
 }

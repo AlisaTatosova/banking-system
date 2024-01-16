@@ -6,7 +6,7 @@
 #include <QApplication>
 #include <QStyle>
 
-SuccessfullRegistration::SuccessfullRegistration(QWidget *parent) : QDialog(parent) {
+SuccessfullRegistration::SuccessfullRegistration(QWidget *parent, const QString& text) : QDialog(parent) {
     setWindowFlags(windowFlags() | Qt::WindowMaximizeButtonHint);
 
     this -> setStyleSheet("background-color: black;");
@@ -14,8 +14,9 @@ SuccessfullRegistration::SuccessfullRegistration(QWidget *parent) : QDialog(pare
 
     layout = new QVBoxLayout(this);
     success = new QLabel(this);
-    success -> setText("You are successfully registered!");
+    success -> setText(text);
     success -> setStyleSheet("border: none; color: green; font-size: 30px;");
+
 
     layout -> addWidget(success);
     layout -> setSpacing(20);
