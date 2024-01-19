@@ -18,7 +18,7 @@ class Account : public QDialog {
 private slots:
     void cards_button_cliked();
     void apply_for_card_button_cliked();
-    void apply_button_is_cliked();
+    void apply_button_is_cliked(const QString& card_type);
     void my_cards_button_cliked();
 
 public:
@@ -89,6 +89,7 @@ private:
 
     long long random;
     QLabel* my_cards_business_card;
+    QLabel* my_card_visa_card_image;
     QLabel* my_card_business_card_image;
 
 
